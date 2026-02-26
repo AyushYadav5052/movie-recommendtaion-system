@@ -3,27 +3,9 @@ import pickle
 import pandas as pd
 import requests
 import numpy as np
-
-
 import gdown
 import os
 
-@st.cache_data
-def load_data():
-    # Check if file already exists locally
-    if not os.path.exists("similarity.pkl"):
-       url = "https://drive.google.com/file/d/1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv/view?usp=drive_link"
-       gdown.download(url, "similarity.pkl", quiet=False)
-
-    # Now load the file safely
-    with open("similarity.pkl", "rb") as f:
-        similarity = pickle.load(f)
-
-    # Example: also load movies dataframe if you have one
-    # movies = pd.read_csv("movies.csv")
-    movies = ["Dummy movie list"]  # replace with your actual dataset
-
-    return movies, similarity
 # === CONFIGURATION ===
 st.set_page_config(
     page_title="🎬 CineMatch",
@@ -31,19 +13,31 @@ st.set_page_config(
     layout="wide"
 )
 
-
 # === Load Data ===
 @st.cache_data
 def load_data():
-    # Note: Ensure these files exist in your directory
-    movies_dict = pickle.load(open('movies_dict.pkl', 'rb'))
+    # Download similarity.pkl if not already present
+    if not os.path.exists("similarity.pkl"):
+        url = "https://drive.google.com/uc?id=YOUR_SIMILARITY_FILE_ID"  # replace with actual file ID
+        gdown.download(url, "similarity.pkl", quiet=False)
+
+    # Download movies_dict.pkl if not already present
+    if not os.path.exists("movies_dict.pkl"):
+        url_movies = "https://drive.google.com/uc?id=YOUR_MOVIES_FILE_ID"  # replace with actual file ID
+        gdown.download(url_movies, "movies_dict.pkl", quiet=False)
+
+    # Load movies dictionary
+    with open("movies_dict.pkl", "rb") as f:
+        movies_dict = pickle.load(f)
     movies = pd.DataFrame(movies_dict)
-    similarity = pickle.load(open('similarity.pkl', 'rb'))
+
+    # Load similarity matrix
+    with open("similarity.pkl", "rb") as f:
+        similarity = pickle.load(f)
+
     return movies, similarity
 
-
 movies, similarity = load_data()
-
 
 # === API Functions ===
 @st.cache_data(ttl=3600)
@@ -58,7 +52,6 @@ def fetch_movie_details(title):
 
         poster = data.get('Poster', 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image')
 
-        # EXTRACTING NEW FIELDS: Director and Actors (Cast)
         return {
             "title": data.get('Title', title),
             "year": data.get('Year', 'N/A'),
@@ -71,7 +64,6 @@ def fetch_movie_details(title):
         }
     except:
         return None
-
 
 def recommend(movie_title, top_k=5):
     try:
@@ -86,7 +78,6 @@ def recommend(movie_title, top_k=5):
         return recs[:top_k]
     except:
         return []
-
 
 # === CSS STYLING ===
 st.markdown("""
@@ -104,14 +95,6 @@ body {
     border-radius: 24px;
     padding: 2rem;
     margin: 2rem 0;
-}
-.hero-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 24px;
-    padding: 3rem;
-    margin: 1rem 0;
-    position: relative;
-    overflow: hidden;
 }
 .input-section {
     background: rgba(255,255,255,0.08);
@@ -191,7 +174,3 @@ if st.session_state.get('show_results'):
             </div>
             """, unsafe_allow_html=True)
         st.write("")  # Spacer
-
-
-
-
