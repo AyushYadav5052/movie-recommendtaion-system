@@ -3,8 +3,6 @@ import pickle
 import pandas as pd
 import requests
 import numpy as np
-import gdown
-import os
 
 # === CONFIGURATION ===
 st.set_page_config(
@@ -13,31 +11,19 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # === Load Data ===
 @st.cache_data
 def load_data():
-    # Download similarity.pkl if not already present
-    if not os.path.exists("similarity.pkl"):
-        url = "https://drive.google.com/uc?id=YOUR_SIMILARITY_FILE_ID"  # replace with actual file ID
-        gdown.download(url, "similarity.pkl", quiet=False)
-
-    # Download movies_dict.pkl if not already present
-    if not os.path.exists("movies_dict.pkl"):
-        url_movies = "https://drive.google.com/uc?id=YOUR_MOVIES_FILE_ID"  # replace with actual file ID
-        gdown.download(url_movies, "movies_dict.pkl", quiet=False)
-
-    # Load movies dictionary
-    with open("movies_dict.pkl", "rb") as f:
-        movies_dict = pickle.load(f)
+    # Note: Ensure these files exist in your directory
+    movies_dict = pickle.load(open('movies_dict.pkl', 'rb'))
     movies = pd.DataFrame(movies_dict)
-
-    # Load similarity matrix
-    with open("similarity.pkl", "rb") as f:
-        similarity = pickle.load(f)
-
+    similarity = pickle.load(open('similarity.pkl', 'rb'))
     return movies, similarity
 
+
 movies, similarity = load_data()
+
 
 # === API Functions ===
 @st.cache_data(ttl=3600)
@@ -52,6 +38,7 @@ def fetch_movie_details(title):
 
         poster = data.get('Poster', 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image')
 
+        # EXTRACTING NEW FIELDS: Director and Actors (Cast)
         return {
             "title": data.get('Title', title),
             "year": data.get('Year', 'N/A'),
@@ -64,6 +51,7 @@ def fetch_movie_details(title):
         }
     except:
         return None
+
 
 def recommend(movie_title, top_k=5):
     try:
@@ -78,6 +66,7 @@ def recommend(movie_title, top_k=5):
         return recs[:top_k]
     except:
         return []
+
 
 # === CSS STYLING ===
 st.markdown("""
@@ -95,6 +84,14 @@ body {
     border-radius: 24px;
     padding: 2rem;
     margin: 2rem 0;
+}
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    padding: 3rem;
+    margin: 1rem 0;
+    position: relative;
+    overflow: hidden;
 }
 .input-section {
     background: rgba(255,255,255,0.08);
