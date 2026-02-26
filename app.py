@@ -13,7 +13,7 @@ def load_data():
     # Check if file already exists locally
     if not os.path.exists("similarity.pkl"):
        url = "https://drive.google.com/file/d/1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv/view?usp=drive_link"
-        gdown.download(url, "similarity.pkl", quiet=False)
+       gdown.download(url, "similarity.pkl", quiet=False)
 
     # Now load the file safely
     with open("similarity.pkl", "rb") as f:
@@ -191,6 +191,7 @@ if st.session_state.get('show_results'):
             </div>
             """, unsafe_allow_html=True)
         st.write("")  # Spacer
+
 
 
 
