@@ -4,6 +4,12 @@ import pandas as pd
 import requests
 import numpy as np
 
+import gdown  # for Google Drive
+url = "https://drive.google.com/file/d/1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv/view?usp=drive_link"
+output = "similarity.pkl"
+gdown.download(url, output, quiet=False)
+
+
 # === CONFIGURATION ===
 st.set_page_config(
     page_title="🎬 CineMatch",
@@ -171,3 +177,4 @@ if st.session_state.get('show_results'):
             </div>
             """, unsafe_allow_html=True)
         st.write("")  # Spacer
+
