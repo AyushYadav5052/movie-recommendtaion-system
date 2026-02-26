@@ -18,13 +18,12 @@ st.set_page_config(
 def load_data():
     # Download similarity.pkl if not already present
     if not os.path.exists("similarity.pkl"):
-        url = "https://drive.google.com/uc?id=YOUR_SIMILARITY_FILE_ID"  # replace with actual file ID
-        gdown.download(url, "similarity.pkl", quiet=False)
+    url = "https://drive.google.com/uc?id=1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv"
+    gdown.download(url, "similarity.pkl", quiet=False)
 
-    # Download movies_dict.pkl if not already present
     if not os.path.exists("movies_dict.pkl"):
-        url_movies = "https://drive.google.com/uc?id=YOUR_MOVIES_FILE_ID"  # replace with actual file ID
-        gdown.download(url_movies, "movies_dict.pkl", quiet=False)
+    url_movies = "https://drive.google.com/file/d/1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv/view?usp=drive_link"
+    gdown.download(url_movies, "movies_dict.pkl", quiet=False)
 
     # Load movies dictionary
     with open("movies_dict.pkl", "rb") as f:
@@ -174,3 +173,4 @@ if st.session_state.get('show_results'):
             </div>
             """, unsafe_allow_html=True)
         st.write("")  # Spacer
+
