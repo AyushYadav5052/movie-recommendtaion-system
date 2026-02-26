@@ -4,10 +4,17 @@ import pandas as pd
 import requests
 import numpy as np
 
-import gdown  # for Google Drive
-url = "https://drive.google.com/file/d/1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv/view?usp=drive_link"
-output = "similarity.pkl"
-gdown.download(url, output, quiet=False)
+import gdown  
+def load_data():
+    url = "https://drive.google.com/file/d/1AP2WXMXd4u78sOv08z4c-vk_KlXUxWXv/view?usp=drive_link"
+    gdown.download(url, "similarity.pkl", quiet=False)
+
+    with open("similarity.pkl", "rb") as f:
+        similarity = pickle.load(f)
+
+    # load movies dataframe too if needed
+    # movies = pd.read_csv("movies.csv")
+    return similarity
 
 
 # === CONFIGURATION ===
@@ -177,4 +184,5 @@ if st.session_state.get('show_results'):
             </div>
             """, unsafe_allow_html=True)
         st.write("")  # Spacer
+
 
